@@ -14,9 +14,6 @@ async function copyFiles(folderOrig, folderCopy) {
       const filePathCopy = path.join(folderCopy, file.name);
       if (file.isFile()) {
         fs.copyFile(filePath, filePathCopy);
-      } else {
-        fs.mkdir(filePathCopy, { recursive: true });
-        copyFiles(filePath, filePathCopy);
       }
     });
   });
