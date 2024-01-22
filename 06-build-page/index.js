@@ -9,21 +9,21 @@ const assetsFolderPath = path.join(__dirname, 'assets');
 const assetsFolderCopyPath = path.join(folderPath, 'assets');
 const componentsFolderPath = path.join(__dirname, 'components');
 
-console.log('folderPath --', folderPath);
-console.log('stylesFolderPath --', stylesFolderPath);
-console.log('assetsFolderPath --', assetsFolderPath);
-console.log('assetsFolderCopyPath --', assetsFolderCopyPath);
-console.log('componentsFolderPath --', componentsFolderPath);
+// console.log('folderPath --', folderPath);
+// console.log('stylesFolderPath --', stylesFolderPath);
+// console.log('assetsFolderPath --', assetsFolderPath);
+// console.log('assetsFolderCopyPath --', assetsFolderCopyPath);
+// console.log('componentsFolderPath --', componentsFolderPath);
 
 // main files
 const templatePath = path.join(__dirname, 'template.html');
-console.log('templatePath --', templatePath);
+// console.log('templatePath --', templatePath);
 
 const htmlFilePath = path.join(folderPath, 'index.html');
-console.log('htmlFilePath --', htmlFilePath);
+// console.log('htmlFilePath --', htmlFilePath);
 
 const stylesFilePath = path.join(folderPath, 'style.css');
-console.log('stylesFilePath --', stylesFilePath);
+// console.log('stylesFilePath --', stylesFilePath);
 
 // create project-dir
 async function recreateFolder(folder) {
@@ -81,9 +81,12 @@ async function bundleCss() {
 // bundle html
 async function bundleHtml() {
   const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
-  await fs.readFile(templatePath, 'utf-8').then(async (item) => {
+  await fsPromises.readFile(templatePath, 'utf-8').then(async (item) => {
     components.forEach((component) => {
-      
+      const section = path.parse(component.name).name;
+      console.log('component', component);
+      const componentFile = path.join(componentsFolderPath, component.name);
+      console.log('componentFile', componentFile);
     });
   });
 }
@@ -93,6 +96,7 @@ async function buildProject() {
   await recreateFolder(folderPath);
   await copyDir(assetsFolderPath, assetsFolderCopyPath);
   await bundleCss();
+  await bundleHtml();
 }
 
 buildProject();
