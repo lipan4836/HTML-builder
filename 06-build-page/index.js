@@ -43,7 +43,7 @@ async function copyFiles(folderOrig, folderCopy) {
       if (file.isFile()) {
         fsPromises.copyFile(filePath, filePathCopy);
       } else {
-        const subFolder = path.join(folderOrig, file.name)
+        const subFolder = path.join(folderOrig, file.name);
         const subFolderCopy = path.join(folderCopy, file.name);
         fsPromises.mkdir(subFolderCopy, { recursive: true });
         await copyDir(subFolder, subFolderCopy);
@@ -61,12 +61,31 @@ async function copyDir(folderOrig, folderCopy) {
   }
 }
 
+// bundle css
+async function bundleCss() {
+  fs.readdir(stylesFolderPath, { withFileTypes: true }, (error, files) => {
+    if (error) {
+      console.error(error.message);
+      return;
+    }
 
+    const writeStream = fs.createWriteStream(stylesFilePath);
+    files.forEach((file) => {
+      if (path.parse(file.name).ext.slice(1) === 'css' && file.isFile()) {
+        const filePath = path.join(stylesFolderPath, file.name);
+
+        const readStream = fs.createReadStream(filePath, 'utf8');
+        readStream.pipe(writeStream);
+      }
+    });
+  });
+}
 
 // main function
 async function buildProject() {
   await recreateFolder(folderPath);
   await copyDir(assetsFolderPath, assetsFolderCopyPath);
+  await bundleCss();
 }
 
 buildProject();
