@@ -83,7 +83,7 @@ async function bundleHtml() {
   try {
     const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
     await fsPromises.readFile(templatePath, 'utf-8').then(async (item) => {
-      components.forEach((component) => {
+      for (let component of components) {
         const section = path.parse(component.name).name;
         console.log('section', section);
         const componentFile = path.join(componentsFolderPath, component.name);
@@ -91,7 +91,7 @@ async function bundleHtml() {
         const streamComponents = await fsPromises.readFile(componentFile, 'utf8');
         console.log('streamComponents', streamComponents);
         item = item.replaceAll(`{{${section}}}`, streamComponents);
-      });
+      }
 
       await fsPromises.writeFile(htmlFilePath, item);
     });
