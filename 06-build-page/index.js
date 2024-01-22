@@ -9,21 +9,10 @@ const assetsFolderPath = path.join(__dirname, 'assets');
 const assetsFolderCopyPath = path.join(folderPath, 'assets');
 const componentsFolderPath = path.join(__dirname, 'components');
 
-// console.log('folderPath --', folderPath);
-// console.log('stylesFolderPath --', stylesFolderPath);
-// console.log('assetsFolderPath --', assetsFolderPath);
-// console.log('assetsFolderCopyPath --', assetsFolderCopyPath);
-// console.log('componentsFolderPath --', componentsFolderPath);
-
 // main files
 const templatePath = path.join(__dirname, 'template.html');
-// console.log('templatePath --', templatePath);
-
 const htmlFilePath = path.join(folderPath, 'index.html');
-// console.log('htmlFilePath --', htmlFilePath);
-
 const stylesFilePath = path.join(folderPath, 'style.css');
-// console.log('stylesFilePath --', stylesFilePath);
 
 // create project-dir
 async function recreateFolder(folder) {
@@ -54,7 +43,7 @@ async function copyDir(folderOrig, folderCopy) {
     await recreateFolder(folderCopy);
     await copyFiles(folderOrig, folderCopy);
   } catch (error) {
-    console.log(error);
+    console.error(error.message);
   }
 }
 
@@ -81,15 +70,17 @@ async function bundleCss() {
 // bundle html
 async function bundleHtml() {
   try {
-    const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
+    const components = await fsPromises.readdir(componentsFolderPath, {
+      withFileTypes: true,
+    });
     await fsPromises.readFile(templatePath, 'utf-8').then(async (item) => {
       for (let component of components) {
         const section = path.parse(component.name).name;
-        console.log('section', section);
         const componentFile = path.join(componentsFolderPath, component.name);
-        console.log('componentFile', componentFile);
-        const streamComponents = await fsPromises.readFile(componentFile, 'utf8');
-        console.log('streamComponents', streamComponents);
+        const streamComponents = await fsPromises.readFile(
+          componentFile,
+          'utf8',
+        );
         item = item.replaceAll(`{{${section}}}`, streamComponents);
       }
 
