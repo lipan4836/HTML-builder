@@ -25,9 +25,6 @@ console.log('htmlFilePath --', htmlFilePath);
 const stylesFilePath = path.join(folderPath, 'style.css');
 console.log('stylesFilePath --', stylesFilePath);
 
-// const readStream = fs.createReadStream(template, 'utf8');
-// readStream.on('data', (chunk) => console.log(chunk.toString()));
-
 // create project-dir
 async function recreateFolder(folder) {
   await fsPromises.rm(folder, { recursive: true, force: true });
@@ -77,6 +74,16 @@ async function bundleCss() {
         const readStream = fs.createReadStream(filePath, 'utf8');
         readStream.pipe(writeStream);
       }
+    });
+  });
+}
+
+// bundle html
+async function bundleHtml() {
+  const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
+  await fs.readFile(templatePath, 'utf-8').then(async (item) => {
+    components.forEach((component) => {
+      
     });
   });
 }
