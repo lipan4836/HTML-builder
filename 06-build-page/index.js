@@ -80,15 +80,25 @@ async function bundleCss() {
 
 // bundle html
 async function bundleHtml() {
-  const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
-  await fsPromises.readFile(templatePath, 'utf-8').then(async (item) => {
-    components.forEach((component) => {
-      const section = path.parse(component.name).name;
-      console.log('component', component);
-      const componentFile = path.join(componentsFolderPath, component.name);
-      console.log('componentFile', componentFile);
+  try {
+    const components = await fsPromises.readdir(componentsFolderPath, { withFileTypes: true });
+    await fsPromises.readFile(templatePath, 'utf-8').then(async (item) => {
+      components.forEach((component) => {
+        const section = path.parse(component.name).name;
+        console.log('section', section);
+        const componentFile = path.join(componentsFolderPath, component.name);
+        console.log('componentFile', componentFile);
+        const streamComponents = await fsPromises.readFile(componentFile, 'utf8');
+        console.log('streamComponents', streamComponents);
+        item = item.replaceAll(`{{${section}}}`, streamComponents);
+      });
+
+      await fsPromises.writeFile(htmlFilePath, item);
     });
-  });
+  } catch (error) {
+    console.error(error.message);
+    return;
+  }
 }
 
 // main function
